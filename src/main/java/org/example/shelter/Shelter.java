@@ -1,5 +1,6 @@
 package org.example.shelter;
 
+import lombok.Getter;
 import org.example.model.AdoptionStatus;
 import org.example.model.Animal;
 
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Getter
 public class Shelter<T extends Animal> {
     private final List<T> animals = new ArrayList<>();
 
@@ -15,25 +17,11 @@ public class Shelter<T extends Animal> {
         animals.add(animal);
     }
 
-    public List<String> getSpecies() {
-        Set<String> speciesSet = new HashSet<>();
-        for (var species : Animal.class.getPermittedSubclasses()) {
-            speciesSet.add(species.getSimpleName());
-        }
-        return new ArrayList<String>(speciesSet);
-    }
-
-    public List<T> getAllAnimals() {
-
-        return animals;
-    }
-
     public List<T> findBySpecies(String species) {
         List<T> animalsBySpecies = new ArrayList<>();
         for (T animal : animals) {
             if (animal.getSpecies().equals(species)) animalsBySpecies.add(animal);
         }
-
         return animalsBySpecies;
     }
 
