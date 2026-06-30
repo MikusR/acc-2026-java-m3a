@@ -27,7 +27,6 @@ public class ConsoleMenu {
                 scanner.next();
                 continue;
             }
-            ;
             int choice = scanner.nextInt();
             if (choice == 0) break;
             System.out.println(choice);
