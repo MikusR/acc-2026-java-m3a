@@ -5,13 +5,20 @@ import org.example.model.AdoptionStatus;
 import org.example.model.Animal;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 public class Shelter<T extends Animal> {
     private final List<T> animals = new ArrayList<>();
+    private final List<String> species;
+
+    public Shelter() {
+        List<String> species = new ArrayList<>();
+        for (Class<?> spec : Animal.class.getPermittedSubclasses()) {
+            species.add(spec.getSimpleName());
+        }
+        this.species = new ArrayList<>(species);
+    }
 
     public void addAnimal(T animal) {
         animals.add(animal);
