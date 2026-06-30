@@ -62,11 +62,12 @@ public class ConsoleMenu {
                     break;
                 case 5:
                     System.out.println("Choose animal");
-                    for (Animal animal : shelter.findAvailableAnimals()) {
-                        System.out.println(animal);
+                    List<Animal> availableAnimals = shelter.findAvailableAnimals();
+                    for (int i = 0; i < availableAnimals.size(); i++) {
+                        System.out.println(i + 1 + " | " + availableAnimals.get(i).toString());
                     }
-                    String id = scanner.next();
-                    shelter.markAsAdopted(id);
+                    int animal = scanner.nextInt();
+                    shelter.markAsAdopted(availableAnimals.get(animal - 1).getId().toString());
                     break;
                 default:
                     break;
