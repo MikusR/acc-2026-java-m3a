@@ -1,9 +1,6 @@
 package org.example.menu;
 
-import org.example.model.AdoptionStatus;
-import org.example.model.Animal;
-import org.example.model.AnimalId;
-import org.example.model.Bird;
+import org.example.model.*;
 import org.example.shelter.Shelter;
 
 import java.util.List;
@@ -12,86 +9,133 @@ import java.util.Scanner;
 public class ConsoleMenu {
     private final Shelter<Animal> shelter;
     private final Scanner scanner = new Scanner(System.in);
+    private final List<String> species;
 
     public ConsoleMenu(Shelter<Animal> shelter) {
         this.shelter = shelter;
+        this.species = shelter.getSpecies();
+    }
+
+    private static <T> void displayList(String title, List<T> list) {
+        System.out.println(title);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(i + 1 + " | " + list.get(i));
+        }
     }
 
     public void start() {
-        // TODO:
-        // Show menu in a loop
-        // Read user input
-        // Call correct 'Shelter' methods based on selected option
+        boolean run = true;
 
-        do {
+        while (run) {
             System.out.println("+".repeat(30));
-            printMenu();
-            if (!scanner.hasNextInt()) {
-                // scanner.next() needs to be here, as the hasNextInt() keeps the wrong input
-                scanner.next();
-                continue;
-            }
-            int choice = scanner.nextInt();
-            if (choice == 0) break;
-            // System.out.println(choice);
+            int choice = getValidChoice("Main Menu", mainMenu());
 
+            if (choice == 0) run = false;
+
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
             switch (choice) {
                 case 1:
-                    Animal bird3 = new Bird(new AnimalId(), "Bird 3", 1);
-                    bird3.setAdoptionStatus(AdoptionStatus.ADOPTED);
-                    shelter.addAnimal(bird3);
+                    int speciesToAddChoice = getValidChoice("Choose Species of Animal to create", species);
+                    Animal animal = createAnimal(speciesToAddChoice);
+                    shelter.addAnimal(animal);
+                    System.out.println("Animal added");
+                    System.out.println(animal);
+
                     break;
                 case 2:
-
-                    for (Animal animal : shelter.getAllAnimals()) {
-                        System.out.println(animal);
-                    }
+                    displayList("List of All Animals", shelter.getAnimals());
                     break;
                 case 3:
-                    System.out.println("Choose species");
-                    List<String> species = shelter.getSpecies();
-                    for (int i = 0; i < species.size(); i++) {
-                        System.out.println(i + 1 + " | " + shelter.getSpecies().get(i));
-                    }
-                    int speciesChoice = scanner.nextInt();
+                    int speciesChoice = getValidChoice("Choose Species", shelter.getSpecies());
+                    if (speciesChoice == 0) break;
 
-                    System.out.println();
-                    for (Animal animal : shelter.findBySpecies(species.get(speciesChoice - 1))) {
-                        System.out.println(animal);
+                    String selectedSpecies = species.get(speciesChoice - 1);
+                    if (shelter.findBySpecies(selectedSpecies).isEmpty()) {
+                        System.out.println("There are no animals with species " + selectedSpecies);
+                        break;
                     }
-
+                    displayList("List of Animals with type " + selectedSpecies, shelter.findBySpecies(selectedSpecies));
                     break;
                 case 4:
-                    for (Animal animal : shelter.findAvailableAnimals()) {
-                        System.out.println(animal);
-                    }
+                    displayList("Animals available for adoption", shelter.findAvailableAnimals());
                     break;
                 case 5:
-                    System.out.println("Choose animal");
                     List<Animal> availableAnimals = shelter.findAvailableAnimals();
-                    for (int i = 0; i < availableAnimals.size(); i++) {
-                        System.out.println(i + 1 + " | " + availableAnimals.get(i).toString());
-                    }
-                    int animal = scanner.nextInt();
-                    shelter.markAsAdopted(availableAnimals.get(animal - 1).getId().toString());
+                    int adoptAnimalChoice = getValidChoice("Mark animal as adopted", availableAnimals);
+
+                    shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString());
+                    System.out.println(availableAnimals.get(adoptAnimalChoice - 1));
                     break;
                 default:
-                    break;
+                    run = false;
             }
-        } while (true);
+        }
 
         scanner.close();
 
     }
 
-    private void printMenu() {
-        System.out.println("""
-                1. Add animal
-                2. List all animals
-                3. Find animals by species
-                4. List available animals
-                5. Mark animal as adopted
-                0. Exit
-                """);
+    private Animal createAnimal(int speciesToAddChoice) {
+        String name = getValidName();
+        int age = getValidAge();
+
+        return switch (species.get(speciesToAddChoice - 1)) {
+            case "Dog" -> new Dog(new AnimalId(), name, age);
+            case "Cat" -> new Cat(new AnimalId(), name, age);
+            case "Bird" -> new Bird(new AnimalId(), name, age);
+            case "Snake" -> new Snake(new AnimalId(), name, age);
+            default -> throw new IllegalStateException("Unexpected value: " + species.get(speciesToAddChoice - 1));
+        };
+    }
+
+    private int getValidAge() {
+
+        while (true) {
+            System.out.print("Enter age: ");
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input! Please use only numbers larger than 0");
+                scanner.next();
+                continue;
+            }
+            int age = scanner.nextInt();
+            if (age <= 0) {
+                System.out.println("Invalid input! Please enter a number larger than 0");
+            } else return age;
+        }
+
+    }
+
+    private String getValidName() {
+        while (true) {
+            System.out.print("Enter name: ");
+            String name = scanner.nextLine();
+            if (!name.isBlank()) return name;
+            System.out.print("Name can't be blank.");
+        }
+
+    }
+
+    private <T> int getValidChoice(String title, List<T> list) {
+        int maxChoice = list.size();
+        displayList(title, list);
+        System.out.print("Enter choice number, 0 to go back");
+        while (true) {
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input! Please enter a number between 1 and " + maxChoice + " or 0 to exit");
+                // scanner.next() needs to be here, as the hasNextInt() keeps the wrong input
+                scanner.next();
+                continue;
+            }
+            int choice = scanner.nextInt();
+            if (choice < 0 || choice > maxChoice) {
+                System.out.println("Invalid input! Please enter a number between 1 and " + maxChoice + " or 0 to exit");
+            } else return choice;
+        }
+    }
+
+
+    private List<String> mainMenu() {
+        return List.of("Add animal", "List all animals", "Find animals by species", "List available animals", "Mark animal as adopted", "Exit");
     }
 }
