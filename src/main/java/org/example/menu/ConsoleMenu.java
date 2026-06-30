@@ -1,8 +1,11 @@
 package org.example.menu;
 
 import org.example.model.Animal;
+import org.example.model.AnimalId;
+import org.example.model.Bird;
 import org.example.shelter.Shelter;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleMenu {
@@ -29,7 +32,31 @@ public class ConsoleMenu {
             }
             int choice = scanner.nextInt();
             if (choice == 0) break;
-            System.out.println(choice);
+            // System.out.println(choice);
+
+            switch (choice) {
+                case 1:
+                    Animal bird3 = new Bird(new AnimalId(), "Bird 3", 1);
+
+                    shelter.addAnimal(bird3);
+                    break;
+                case 2:
+
+                    for (Animal animal : shelter.getAllAnimals()) {
+                        System.out.println(animal);
+                    }
+                    break;
+                case 3:
+                    System.out.println("Choose species");
+
+                    for (Animal animal : shelter.findBySpecies("Dog")) {
+                        System.out.println(animal);
+                    }
+                    System.out.println("animals by species");
+                    break;
+                default:
+                    break;
+            }
         } while (true);
 
         scanner.close();
