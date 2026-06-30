@@ -2,6 +2,8 @@ package org.example.model;
 
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 public sealed abstract class Animal permits Bird, Cat, Dog, Snake {
     private final AnimalId id;

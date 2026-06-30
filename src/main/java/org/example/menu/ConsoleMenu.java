@@ -49,7 +49,10 @@ public class ConsoleMenu {
                     break;
                 case 3:
                     System.out.println("Choose species");
+                    for (shelter.getSpecies()){}
+                    System.out.println();
 
+                    System.out.println();
                     for (Animal animal : shelter.findBySpecies("Dog")) {
                         System.out.println(animal);
                     }
