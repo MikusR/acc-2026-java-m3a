@@ -10,4 +10,5 @@
 - [x] Searching animals by species
 - [ ] Marking an animal as adopted
 - [x] Displaying only available animals
-- [ ] add lombok
+- [x] add lombok
+- [ ] animal class can be simplified with lombok

@@ -1,6 +1,9 @@
 package org.example.model;
 
-public sealed abstract class Animal permits Dog,Cat,Bird {
+import lombok.Setter;
+
+@Setter
+public sealed abstract class Animal permits Dog, Cat, Bird {
     private final AnimalId id;
     private String name;
     private int age;
@@ -29,14 +32,14 @@ public sealed abstract class Animal permits Dog,Cat,Bird {
         return adoptionStatus;
     }
 
-    public void markAsAdopted(){
+    public void markAsAdopted() {
         this.adoptionStatus = AdoptionStatus.ADOPTED;
     }
 
     public abstract String getSpecies();
 
     @Override
-    public String toString(){
+    public String toString() {
         return id + " | " + name + " | " + age + " years old | " + getSpecies() + " | " + adoptionStatus;
     }
 }

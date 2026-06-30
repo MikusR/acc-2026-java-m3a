@@ -1,5 +1,6 @@
 package org.example.menu;
 
+import org.example.model.AdoptionStatus;
 import org.example.model.Animal;
 import org.example.model.AnimalId;
 import org.example.model.Bird;
@@ -37,7 +38,7 @@ public class ConsoleMenu {
             switch (choice) {
                 case 1:
                     Animal bird3 = new Bird(new AnimalId(), "Bird 3", 1);
-
+                    bird3.setAdoptionStatus(AdoptionStatus.ADOPTED);
                     shelter.addAnimal(bird3);
                     break;
                 case 2:
@@ -52,7 +53,12 @@ public class ConsoleMenu {
                     for (Animal animal : shelter.findBySpecies("Dog")) {
                         System.out.println(animal);
                     }
-                    System.out.println("animals by species");
+
+                    break;
+                case 4:
+                    for (Animal animal : shelter.findAvailableAnimals()) {
+                        System.out.println(animal);
+                    }
                     break;
                 default:
                     break;
