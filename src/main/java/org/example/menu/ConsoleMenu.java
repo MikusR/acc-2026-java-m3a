@@ -60,6 +60,14 @@ public class ConsoleMenu {
                         System.out.println(animal);
                     }
                     break;
+                case 5:
+                    System.out.println("Choose animal");
+                    for (Animal animal : shelter.findAvailableAnimals()) {
+                        System.out.println(animal);
+                    }
+                    String id = scanner.next();
+                    shelter.markAsAdopted(id);
+                    break;
                 default:
                     break;
             }

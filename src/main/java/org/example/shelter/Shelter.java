@@ -35,7 +35,16 @@ public class Shelter<T extends Animal> {
         return availableAnimals;
     }
 
+    public Animal getByID(String id) {
+        for (T animal : animals) {
+            if (animal.getId().toString().equals(id)) return animal;
+        }
+        return null;
+    }
+
     public void markAsAdopted(String id) {
-        // TODO
+        Animal animal = this.getByID(id);
+        if (animal == null) return;
+        animal.setAdoptionStatus(AdoptionStatus.ADOPTED);
     }
 }
