@@ -49,11 +49,14 @@ public class ConsoleMenu {
                     break;
                 case 3:
                     System.out.println("Choose species");
-                    for (shelter.getSpecies()){}
-                    System.out.println();
+                    List<String> species = shelter.getSpecies();
+                    for (int i = 0; i < species.size(); i++) {
+                        System.out.println(i + 1 + " | " + shelter.getSpecies().get(i));
+                    }
+                    int speciesChoice = scanner.nextInt();
 
                     System.out.println();
-                    for (Animal animal : shelter.findBySpecies("Dog")) {
+                    for (Animal animal : shelter.findBySpecies(species.get(speciesChoice - 1))) {
                         System.out.println(animal);
                     }
 
