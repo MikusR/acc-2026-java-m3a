@@ -55,6 +55,6 @@ public class Shelter<T extends Animal> {
     public void markAsAdopted(String id) {
         Animal animal = this.getByID(id);
         if (animal == null) return;
-        animal.setAdoptionStatus(AdoptionStatus.ADOPTED);
+        animal.markAsAdopted();
     }
 }
