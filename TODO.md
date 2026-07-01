@@ -1,10 +1,9 @@
 # TODO
 
-- [ ] menu
+- [x] menu
     - [x] display menu and accept input
     - [x] accept only valid options
-    - [ ] menu options not as simple String but a list of objects
-    - [ ] check when it exits
+    - [x] menu options not as simple String but a list of objects
     - [x] a function handleInput(valid options) that returns only valid choice
 - [x] Adding a new animal
 - [x] Listing all animals
@@ -18,7 +17,7 @@
 - [x] Validate user input (no empty names, age cannot be negative etc.)
 - [ ] Create a generic utility class for searching and filtering collections (Average animal age, Oldest animal, Number
   of animals of each species etc.)
-- [ ] Add adoption history that tracks:
+- [x] Add adoption history that tracks:
     - Animal
     - Adoption Date
     - Adopter Name
