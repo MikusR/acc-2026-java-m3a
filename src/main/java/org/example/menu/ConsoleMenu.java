@@ -10,6 +10,14 @@ public class ConsoleMenu {
     private final Shelter<Animal> shelter;
     private final Scanner scanner = new Scanner(System.in);
     private final List<String> species;
+    private final Menu mainMenu = new Menu(List.of(
+            new MenuOption(1, "Add animal"),
+            new MenuOption(2, "List all animals"),
+            new MenuOption(3, "Find animals by species"),
+            new MenuOption(4, "List available animals"),
+            new MenuOption(5, "Mark animal as adopted"),
+            new MenuOption(0, "Exit")));
+
 
     public ConsoleMenu(Shelter<Animal> shelter) {
         this.shelter = shelter;
@@ -18,18 +26,24 @@ public class ConsoleMenu {
 
     private static <T> void displayList(String title, List<T> list) {
         System.out.println(title);
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println(i + 1 + " | " + list.get(i));
+        if (list.get(0) instanceof MenuOption) {
+            for (T item : list) {
+                System.out.println(item);
+            }
+        } else {
+            for (int i = 0; i < list.size(); i++) {
+                System.out.println(i + 1 + " | " + list.get(i));
+            }
         }
     }
+
 
     public void start() {
         boolean run = true;
 
         while (run) {
             System.out.println("+".repeat(30));
-            int choice = getValidChoice("Main Menu", mainMenu());
-
+            int choice = getValidChoice("Main Menu", mainMenu.getOptions());
             if (choice == 0) run = false;
 
             System.out.print("\033[H\033[2J");
@@ -121,7 +135,12 @@ public class ConsoleMenu {
     }
 
     private <T> int getValidChoice(String title, List<T> list) {
-        int maxChoice = list.size();
+        int maxChoice;
+        if (list.get(0) instanceof MenuOption) {
+            maxChoice = list.size() - 1;
+        } else {
+            maxChoice = list.size();
+        }
         displayList(title, list);
         System.out.print("Enter choice number, 0 to go back: ");
         while (true) {
@@ -139,8 +158,4 @@ public class ConsoleMenu {
         }
     }
 
-
-    private List<String> mainMenu() {
-        return List.of("Add animal", "List all animals", "Find animals by species", "List available animals", "Mark animal as adopted", "Exit");
-    }
 }
