@@ -1,14 +1,12 @@
 package org.example.model;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public sealed abstract class Animal permits Bird, Cat, Dog, Snake {
     private final AnimalId id;
-    private String name;
-    private int age;
+    private final String name;
+    private final int age;
     private AdoptionStatus adoptionStatus;
 
     protected Animal(AnimalId id, String name, int age) {

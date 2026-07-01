@@ -77,6 +77,10 @@ public class ConsoleMenu {
 
     private void listAvailableAnimalsHandler() {
         List<Animal> availableAnimals = shelter.findAvailableAnimals();
+        if (availableAnimals.isEmpty()) {
+            System.out.println("List is empty");
+            return;
+        }
         int adoptAnimalChoice = promptForMenuChoice("Mark animal as adopted", availableAnimals);
         if (adoptAnimalChoice == 0) return;
         String adopterName = promptForName();
@@ -116,14 +120,14 @@ public class ConsoleMenu {
         while (true) {
             System.out.print("Enter age: ");
             if (!scanner.hasNextInt()) {
-                System.out.println("Invalid input! Please use only numbers larger than 0");
+                System.out.println("Invalid input! Please use only numbers >= 0");
                 scanner.next();
                 continue;
             }
             int age = scanner.nextInt();
             scanner.nextLine();
-            if (age <= 0) {
-                System.out.println("Invalid input! Please enter a number larger than 0");
+            if (age < 0) {
+                System.out.println("Invalid input! Age cant be less than 0");
             } else return age;
         }
 
