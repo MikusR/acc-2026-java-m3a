@@ -1,6 +1,7 @@
 package org.example.menu;
 
-import org.example.model.*;
+import org.example.factory.AnimalFactory;
+import org.example.model.Animal;
 import org.example.shelter.Shelter;
 
 import java.util.List;
@@ -55,16 +56,7 @@ public class ConsoleMenu {
             System.out.flush();
             switch (choice) {
                 case 1:
-                    int speciesToAddChoice = getValidChoice("Choose Species of Animal to create", species);
-                    if (speciesToAddChoice == 0) break;
-                    System.out.println("You are creating a new " + species.get(speciesToAddChoice - 1));
-                    String name = getValidName();
-                    int age = getValidAge();
-
-                    Animal animal = createAnimal(speciesToAddChoice, name, age);
-                    shelter.addAnimal(animal);
-                    System.out.println("Animal added");
-                    System.out.println(animal);
+                    addAnimalHandler();
 
                     break;
                 case 2:
@@ -104,16 +96,20 @@ public class ConsoleMenu {
 
     }
 
-    private Animal createAnimal(int speciesToAddChoice, String name, int age) {
+    private void addAnimalHandler() {
+        int speciesToAddChoice = getValidChoice("Choose Species of Animal to create", species);
+        if (speciesToAddChoice == 0) return;
+        String typeOfAnimalToCreate = species.get(speciesToAddChoice - 1);
+        System.out.println("You are creating a new " + typeOfAnimalToCreate);
+        String name = getValidName();
+        int age = getValidAge();
 
-        return switch (species.get(speciesToAddChoice - 1)) {
-            case "Dog" -> new Dog(new AnimalId(), name, age);
-            case "Cat" -> new Cat(new AnimalId(), name, age);
-            case "Bird" -> new Bird(new AnimalId(), name, age);
-            case "Snake" -> new Snake(new AnimalId(), name, age);
-            default -> throw new IllegalStateException("Unexpected value: " + species.get(speciesToAddChoice - 1));
-        };
+        Animal animal = AnimalFactory.createAnimal(typeOfAnimalToCreate, name, age);
+        shelter.addAnimal(animal);
+        System.out.println("Animal added");
+        System.out.println(animal);
     }
+
 
     private int getValidAge() {
 
