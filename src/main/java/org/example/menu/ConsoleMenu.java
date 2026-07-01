@@ -16,6 +16,7 @@ public class ConsoleMenu {
             new MenuOption(3, "Find animals by species"),
             new MenuOption(4, "List available animals"),
             new MenuOption(5, "Mark animal as adopted"),
+            new MenuOption(6, "List adoption history"),
             new MenuOption(0, "Exit")));
 
 
@@ -26,6 +27,10 @@ public class ConsoleMenu {
 
     private static <T> void displayList(String title, List<T> list) {
         System.out.println(title);
+        if (list.isEmpty()) {
+            System.out.println("List is empty");
+            return;
+        }
         if (list.get(0) instanceof MenuOption) {
             for (T item : list) {
                 System.out.println(item);
@@ -83,8 +88,12 @@ public class ConsoleMenu {
                     List<Animal> availableAnimals = shelter.findAvailableAnimals();
                     int adoptAnimalChoice = getValidChoice("Mark animal as adopted", availableAnimals);
                     if (adoptAnimalChoice == 0) break;
-                    shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString());
+                    String adopterName = getValidName();
+                    shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString(), adopterName);
                     System.out.println(availableAnimals.get(adoptAnimalChoice - 1));
+                    break;
+                case 6:
+                    displayList("List of Adoption events", shelter.getAdoptionHistory());
                     break;
                 default:
                     run = false;

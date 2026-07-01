@@ -1,9 +1,11 @@
 package org.example.shelter;
 
 import lombok.Getter;
+import org.example.model.AdoptionEvent;
 import org.example.model.AdoptionStatus;
 import org.example.model.Animal;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import java.util.List;
 public class Shelter<T extends Animal> {
     private final List<T> animals = new ArrayList<>();
     private final List<String> species;
+    private final List<AdoptionEvent> adoptionHistory = new ArrayList<AdoptionEvent>();
 
     public Shelter() {
         List<String> species = new ArrayList<>();
@@ -18,6 +21,11 @@ public class Shelter<T extends Animal> {
             species.add(spec.getSimpleName());
         }
         this.species = new ArrayList<>(species);
+    }
+
+
+    public void addAdoptionHistory(Animal animal, LocalDate date, String name) {
+        adoptionHistory.add(new AdoptionEvent(animal, date, name));
     }
 
     public void addAnimal(T animal) {
@@ -47,9 +55,10 @@ public class Shelter<T extends Animal> {
         return null;
     }
 
-    public void markAsAdopted(String id) {
+    public void markAsAdopted(String id, String name) {
         Animal animal = this.getByID(id);
         if (animal == null) return;
         animal.markAsAdopted();
+        addAdoptionHistory(animal, LocalDate.now(), name);
     }
 }
