@@ -11,14 +11,7 @@ public class ConsoleMenu {
     private final Shelter<Animal> shelter;
     private final Scanner scanner = new Scanner(System.in);
     private final List<String> species;
-    private final Menu mainMenu = new Menu(List.of(
-            new MenuOption(1, "Add animal"),
-            new MenuOption(2, "List all animals"),
-            new MenuOption(3, "Find animals by species"),
-            new MenuOption(4, "List available animals"),
-            new MenuOption(5, "Mark animal as adopted"),
-            new MenuOption(6, "List adoption history"),
-            new MenuOption(0, "Exit")));
+    private final Menu mainMenu = new Menu(List.of(new MenuOption(1, "Add animal"), new MenuOption(2, "List all animals"), new MenuOption(3, "Find animals by species"), new MenuOption(4, "List available animals"), new MenuOption(5, "Mark animal as adopted"), new MenuOption(6, "List adoption history"), new MenuOption(0, "Exit")));
 
 
     public ConsoleMenu(Shelter<Animal> shelter) {
@@ -49,7 +42,7 @@ public class ConsoleMenu {
 
         while (run) {
             System.out.println("+".repeat(30));
-            int choice = getValidChoice("Main Menu", mainMenu.getOptions());
+            int choice = promptForMenuChoice("Main Menu", mainMenu.getOptions());
             if (choice == 0) run = false;
 
             System.out.print("\033[H\033[2J");
@@ -57,32 +50,18 @@ public class ConsoleMenu {
             switch (choice) {
                 case 1:
                     addAnimalHandler();
-
                     break;
                 case 2:
                     displayList("List of All Animals", shelter.getAnimals());
                     break;
                 case 3:
-                    int speciesChoice = getValidChoice("Choose Species", shelter.getSpecies());
-                    if (speciesChoice == 0) break;
-
-                    String selectedSpecies = species.get(speciesChoice - 1);
-                    if (shelter.findBySpecies(selectedSpecies).isEmpty()) {
-                        System.out.println("There are no animals with species " + selectedSpecies);
-                        break;
-                    }
-                    displayList("List of Animals with type " + selectedSpecies, shelter.findBySpecies(selectedSpecies));
+                    listAnimalsByTypeHandler();
                     break;
                 case 4:
                     displayList("Animals available for adoption", shelter.findAvailableAnimals());
                     break;
                 case 5:
-                    List<Animal> availableAnimals = shelter.findAvailableAnimals();
-                    int adoptAnimalChoice = getValidChoice("Mark animal as adopted", availableAnimals);
-                    if (adoptAnimalChoice == 0) break;
-                    String adopterName = getValidName();
-                    shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString(), adopterName);
-                    System.out.println(availableAnimals.get(adoptAnimalChoice - 1));
+                    listAvailableAnimalsHandler();
                     break;
                 case 6:
                     displayList("List of Adoption events", shelter.getAdoptionHistory());
@@ -96,13 +75,34 @@ public class ConsoleMenu {
 
     }
 
+    private void listAvailableAnimalsHandler() {
+        List<Animal> availableAnimals = shelter.findAvailableAnimals();
+        int adoptAnimalChoice = promptForMenuChoice("Mark animal as adopted", availableAnimals);
+        if (adoptAnimalChoice == 0) return;
+        String adopterName = promptForName();
+        shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString(), adopterName);
+        System.out.println(availableAnimals.get(adoptAnimalChoice - 1));
+    }
+
+    private void listAnimalsByTypeHandler() {
+        int speciesChoice = promptForMenuChoice("Choose Species", shelter.getSpecies());
+        if (speciesChoice == 0) return;
+
+        String selectedSpecies = species.get(speciesChoice - 1);
+        if (shelter.findBySpecies(selectedSpecies).isEmpty()) {
+            System.out.println("There are no animals with species " + selectedSpecies);
+            return;
+        }
+        displayList("List of Animals with type " + selectedSpecies, shelter.findBySpecies(selectedSpecies));
+    }
+
     private void addAnimalHandler() {
-        int speciesToAddChoice = getValidChoice("Choose Species of Animal to create", species);
+        int speciesToAddChoice = promptForMenuChoice("Choose Species of Animal to create", species);
         if (speciesToAddChoice == 0) return;
         String typeOfAnimalToCreate = species.get(speciesToAddChoice - 1);
         System.out.println("You are creating a new " + typeOfAnimalToCreate);
-        String name = getValidName();
-        int age = getValidAge();
+        String name = promptForName();
+        int age = promptForAge();
 
         Animal animal = AnimalFactory.createAnimal(typeOfAnimalToCreate, name, age);
         shelter.addAnimal(animal);
@@ -111,7 +111,7 @@ public class ConsoleMenu {
     }
 
 
-    private int getValidAge() {
+    private int promptForAge() {
 
         while (true) {
             System.out.print("Enter age: ");
@@ -129,7 +129,7 @@ public class ConsoleMenu {
 
     }
 
-    private String getValidName() {
+    private String promptForName() {
         while (true) {
             System.out.print("Enter name: ");
             String name = scanner.nextLine();
@@ -139,7 +139,7 @@ public class ConsoleMenu {
 
     }
 
-    private <T> int getValidChoice(String title, List<T> list) {
+    private <T> int promptForMenuChoice(String title, List<T> list) {
         int maxChoice;
         if (list.get(0) instanceof MenuOption) {
             maxChoice = list.size() - 1;

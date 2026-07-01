@@ -13,7 +13,7 @@ import java.util.List;
 public class Shelter<T extends Animal> {
     private final List<T> animals = new ArrayList<>();
     private final List<String> species;
-    private final List<AdoptionEvent> adoptionHistory = new ArrayList<AdoptionEvent>();
+    private final List<AdoptionEvent> adoptionHistory = new ArrayList<>();
 
     public Shelter() {
         List<String> species = new ArrayList<>();
