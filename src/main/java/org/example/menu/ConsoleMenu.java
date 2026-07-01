@@ -37,7 +37,12 @@ public class ConsoleMenu {
             switch (choice) {
                 case 1:
                     int speciesToAddChoice = getValidChoice("Choose Species of Animal to create", species);
-                    Animal animal = createAnimal(speciesToAddChoice);
+                    if (speciesToAddChoice == 0) break;
+                    System.out.println("You are creating a new " + species.get(speciesToAddChoice - 1));
+                    String name = getValidName();
+                    int age = getValidAge();
+
+                    Animal animal = createAnimal(speciesToAddChoice, name, age);
                     shelter.addAnimal(animal);
                     System.out.println("Animal added");
                     System.out.println(animal);
@@ -63,7 +68,7 @@ public class ConsoleMenu {
                 case 5:
                     List<Animal> availableAnimals = shelter.findAvailableAnimals();
                     int adoptAnimalChoice = getValidChoice("Mark animal as adopted", availableAnimals);
-
+                    if (adoptAnimalChoice == 0) break;
                     shelter.markAsAdopted(availableAnimals.get(adoptAnimalChoice - 1).getId().toString());
                     System.out.println(availableAnimals.get(adoptAnimalChoice - 1));
                     break;
@@ -76,9 +81,7 @@ public class ConsoleMenu {
 
     }
 
-    private Animal createAnimal(int speciesToAddChoice) {
-        String name = getValidName();
-        int age = getValidAge();
+    private Animal createAnimal(int speciesToAddChoice, String name, int age) {
 
         return switch (species.get(speciesToAddChoice - 1)) {
             case "Dog" -> new Dog(new AnimalId(), name, age);
@@ -99,6 +102,7 @@ public class ConsoleMenu {
                 continue;
             }
             int age = scanner.nextInt();
+            scanner.nextLine();
             if (age <= 0) {
                 System.out.println("Invalid input! Please enter a number larger than 0");
             } else return age;
@@ -111,7 +115,7 @@ public class ConsoleMenu {
             System.out.print("Enter name: ");
             String name = scanner.nextLine();
             if (!name.isBlank()) return name;
-            System.out.print("Name can't be blank.");
+            System.out.println("Name can't be blank.");
         }
 
     }
@@ -119,7 +123,7 @@ public class ConsoleMenu {
     private <T> int getValidChoice(String title, List<T> list) {
         int maxChoice = list.size();
         displayList(title, list);
-        System.out.print("Enter choice number, 0 to go back");
+        System.out.print("Enter choice number, 0 to go back: ");
         while (true) {
             if (!scanner.hasNextInt()) {
                 System.out.println("Invalid input! Please enter a number between 1 and " + maxChoice + " or 0 to exit");
@@ -128,6 +132,7 @@ public class ConsoleMenu {
                 continue;
             }
             int choice = scanner.nextInt();
+            scanner.nextLine();
             if (choice < 0 || choice > maxChoice) {
                 System.out.println("Invalid input! Please enter a number between 1 and " + maxChoice + " or 0 to exit");
             } else return choice;
